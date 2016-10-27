@@ -31,13 +31,8 @@ module Retriever
       # link begins with '//'
       return "#{@scheme}:#{this_link}" if DOUBLE_SLASH_RE =~ this_link
 
-      # link uses relative path with no slashes at all
-      if link_uri.relative?
-        if @current_page_url[-1, 1] == "/"
-          return "#{@current_page_url}#{this_link}"
-        end
-        return "#{@current_page_url}/#{this_link}"
-      end
+      current_url = Addressable::URI.parse(@current_page_url).normalize.to_s
+      URI(current_url).merge(this_link).to_s
     end
 
     private

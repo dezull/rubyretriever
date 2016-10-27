@@ -74,4 +74,21 @@ SOURCE
 
     expect(links).to include('http://mises.org/system/tdf/Robert%20Nozick%20and%20Murray%20Rothbard%20David%20Gordon.mp3?file=1&amp;type=audio')
   end
+
+  context 'with file name' do
+    t = Retriever::Target.new('http://www.cnet.com/reviews/page.html')
+    let(:links) do
+      Retriever::Page.new('http://www.cnet.com/reviews/page.html', @source, t).links
+    end
+
+    it 'returns relative urls with full path based on hostname' do
+      @source = (<<SOURCE).strip
+<a href='/test.html'>test</a>
+<a href='cpage_18'>about</a>
+SOURCE
+
+      expect(links).to include('http://www.cnet.com/test.html',
+                               'http://www.cnet.com/reviews/cpage_18')
+    end
+  end
 end
